@@ -39,9 +39,7 @@
           mapAttrs' (name: value: nameValuePair (name + "-optimized") value) (
             projectPackages.override {
               ocamlPackages = ocamlPackages.overrideScope (
-                self: super: {
-                  ocaml = super.ocaml.override { flambdaSupport = true; };
-                }
+                self: super: { ocaml = super.ocaml.override { flambdaSupport = true; }; }
               );
             }
           );
