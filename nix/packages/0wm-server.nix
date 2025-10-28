@@ -16,16 +16,11 @@
 }:
 ocamlPackages.buildDunePackage (finalAttrs: {
   pname = "0wm-server";
-  version = "0-unstable-2025-09-23";
+  version = "0-unstable";
 
   duneVersion = "3";
 
-  src = fetchFromGitHub {
-    owner = "lab0-cc";
-    repo = "0WM-Server";
-    rev = "a16be8b5dca2359bf1dde666492ccb62b24d77d7";
-    hash = "sha256-oLZvdj59oc7muYKTcSae0WvpBlph4U6eEB/ziOu4xE8=";
-  };
+  src = ../../.;
 
   nativeBuildInputs = [
     makeWrapper
