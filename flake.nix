@@ -32,11 +32,17 @@
         ocamlPackages = pkgs.ocaml-ng.ocamlPackages_5_2;
         projectPackages = pkgs.callPackage ./nix/packages/default.nix { inherit ocamlPackages; };
         projectTests = pkgs.callPackage ./nix/tests/default.nix { inherit pkgs ngipkgs; };
+
+        # Flake packages need to be derivations
+        filterPkgs = attrs: with pkgs.lib; filterAttrs (n: isDerivation) attrs;
       in
       {
-        packages = projectPackages // projectTests;
+        packages = filterPkgs (projectPackages // projectTests);
 
-        checks = projectTests;
+        checks = {
+          inherit (projectPackages) _0wm-server;
+          inherit (projectTests) test;
+        };
 
         devShells.default = pkgs.mkShell {
           # build tools
