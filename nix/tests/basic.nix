@@ -6,7 +6,7 @@
 {
   name = "0WM server + client";
 
-  # we need to extend pkgs with ngipkgs, so it can't be read-only
+  # pkgs can't be read-only, because we need to extend it with NGIpkgs
   node.pkgsReadOnly = false;
 
   nodes = {
@@ -18,11 +18,12 @@
       }:
       {
         imports = [
+          # extend pkgs with NGIpkgs
           ngipkgs.nixosModules.ngipkgs
 
           # NixOS modules
-          ngipkgs.nixosModules.services.zwm-server
-          ngipkgs.nixosModules.programs.zwm-client
+          "${ngipkgs}/projects/0WM/services/0wm-server/module.nix"
+          "${ngipkgs}/projects/0WM/programs/0wm-client/module.nix"
 
           # Enable graphical session + users (alice, bob)
           "${ngipkgs.inputs.nixpkgs}/nixos/tests/common/x11.nix"
@@ -46,7 +47,7 @@
         };
 
         services.xserver.enable = true;
-        test-support.displayManager.auto.user = "alice";
+        test-support.displayManager.auto.user = "alice"; # autologin
 
         programs.chromium.enable = true;
         programs.chromium.extensions = [

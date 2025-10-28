@@ -7,5 +7,6 @@
 /database
 
 # Nix
-result*
 .direnv*
+.nixos-test-history
+result*
