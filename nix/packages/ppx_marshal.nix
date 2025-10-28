@@ -4,11 +4,9 @@
   ocamlPackages,
   gendarme,
   gendarme-ezjsonm,
-  gendarme-json,
   gendarme-toml,
   gendarme-yaml,
   gendarme-yojson,
-  ppx_marshal_ext,
 }:
 
 ocamlPackages.buildDunePackage (finalAttrs: {
@@ -22,13 +20,19 @@ ocamlPackages.buildDunePackage (finalAttrs: {
   ];
 
   buildInputs = [
+    gendarme
+    ocamlPackages.ppxlib
+  ];
+
+  checkInputs = [
     gendarme-ezjsonm
-    gendarme-json
     gendarme-toml
     gendarme-yaml
     gendarme-yojson
-    ppx_marshal_ext
+    ocamlPackages.alcotest
   ];
+
+  doCheck = true;
 
   meta = {
     description = "Preprocessor extension to automatically define marshallers for OCaml types";
