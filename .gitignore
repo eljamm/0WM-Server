@@ -5,3 +5,7 @@
 /build
 /data
 /database
+
+# Nix
+result*
+.direnv*
