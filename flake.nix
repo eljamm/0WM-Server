@@ -31,13 +31,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         ocamlPackages = pkgs.ocaml-ng.ocamlPackages_5_2;
         projectPackages = pkgs.callPackage ./nix/packages/default.nix { inherit ocamlPackages; };
-
-        # Tests
-        nixosTest = test: args: pkgs.testers.runNixOSTest (import test args);
-        projectTests = {
-          test = ngipkgs.checks.${system}."projects/0WM/nixos/tests/basic";
-          custom-test = nixosTest ./nix/tests/basic.nix { inherit ngipkgs; };
-        };
+        projectTests = pkgs.callPackage ./nix/tests/default.nix { inherit pkgs ngipkgs; };
       in
       {
         packages = projectPackages // projectTests;
