@@ -1,8 +1,15 @@
 {
   description = "0WM Server";
 
+  nixConfig = {
+    ## Enable NGIpkgs binary cache
+    # extra-substituters = [ "https://ngi.cachix.org/" ];
+    # extra-trusted-public-keys = [ "ngi.cachix.org-1:n+CAL72ROC3qQuLxIHpV+Tw5t42WhXmMhprAGkRSrOw=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    ngipkgs.url = "github:ngi-nix/ngipkgs";
     systems.url = "github:nix-systems/default";
     flake-utils = {
       url = "github:numtide/flake-utils";
@@ -14,17 +21,28 @@
     {
       self,
       nixpkgs,
+      ngipkgs,
       flake-utils,
       ...
-    }:
+    }@inputs:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         ocamlPackages = pkgs.ocaml-ng.ocamlPackages_5_2;
+        projectPackages = pkgs.callPackage ./nix/packages/default.nix { inherit ocamlPackages; };
+
+        # Tests
+        nixosTest = test: args: pkgs.testers.runNixOSTest (import test args);
+        projectTests = {
+          test = ngipkgs.checks.${system}."projects/0WM/nixos/tests/basic";
+          custom-test = nixosTest ./nix/tests/basic.nix { inherit ngipkgs; };
+        };
       in
       {
-        packages = pkgs.callPackage ./nix/packages/default.nix { inherit ocamlPackages; };
+        packages = projectPackages // projectTests;
+
+        checks = projectTests;
 
         devShells.default = pkgs.mkShell {
           # build tools
@@ -40,10 +58,12 @@
           buildInputs = with ocamlPackages; [
             base64
             camlimages
+            domainslib
             dream
             lwt_ppx
-            self.packages.gendarme-yojson
-            self.packages.ppx_marshal
+            projectPackages.gendarme
+            projectPackages.gendarme-yojson
+            projectPackages.ppx_marshal
             uuidm
           ];
         };
