@@ -27,6 +27,22 @@ opam install --confirm-level=unsafe-yes --deps-only .
 dune exec src/zwm.exe
 ```
 
+Using [Nix](https://nixos.org/download/), with [Flakes](https://wiki.nixos.org/wiki/Flakes#Setup) enabled:
+
+```bash
+# Enter development environment
+nix develop
+# Compile and run the server
+dune exec src/zwm.exe
+```
+
+```bash
+# Run NixOS test
+nix build .#test -L
+# Run NixOS test interactively, then type `run_tests()` in the python console
+nix run .#test.driverInteractive -L
+```
+
 By default, the server listens to `127.0.0.1:8000`; this can be configured in the `config.json` file.
 
 ## Funding
