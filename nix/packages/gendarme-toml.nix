@@ -16,7 +16,7 @@ ocamlPackages.buildDunePackage (finalAttrs: {
     writableTmpDirAsHomeHook
   ];
 
-  buildInputs = with ocamlPackages; [
+  propagatedBuildInputs = with ocamlPackages; [
     ppx_marshal_ext
     toml
   ];
