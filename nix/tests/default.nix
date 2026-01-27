@@ -11,5 +11,5 @@ in
 
 {
   test = nixosTest ./basic.nix args;
-  test-ngipkgs = ngipkgs.checks.${system}."projects/0WM/nixos/tests/basic";
+  test-ngipkgs = ngipkgs.projects."0WM".tests.basic;
 }

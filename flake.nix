@@ -21,7 +21,6 @@
     {
       self,
       nixpkgs,
-      ngipkgs,
       flake-utils,
       ...
     }@inputs:
@@ -29,6 +28,12 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        ngipkgs = import inputs.ngipkgs {
+          flake = self;
+          sources = inputs;
+          inherit system;
+        };
+
         ocamlPackages = pkgs.ocaml-ng.ocamlPackages_5_2;
         projectPackages = pkgs.callPackage ./nix/packages/default.nix { inherit ocamlPackages; };
         projectTests = pkgs.callPackage ./nix/tests/default.nix { inherit pkgs ngipkgs; };
